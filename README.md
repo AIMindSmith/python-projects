@@ -15,5 +15,4 @@ Each project is designed to be easy to understand and modify.
 
 ## 🚀 Getting Started
 
-To run any project:
-1. Clone this repository:
+
