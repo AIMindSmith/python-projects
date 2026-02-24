@@ -31,24 +31,27 @@ if top_of_range <= 0:
 else:
     print("lets start the game")
 
-    random_number = random.randint(0, top_of_range)
-    print(random_number)
+    random_number = random.randint(1, top_of_range)
+    guesses = 0
 
-while True:
-    guesses += 1
-    guess = input("make a guess : ")
-    guess.isdigit()
-    guess = int(guess)
+    while True:
+        guesses += 1
+        guess = input("make a guess : ")
+        if not guess.isdigit():
+            print("please enter a valid number")
+            guesses -= 1
+            continue
+        guess = int(guess)
 
-    if guess < 0:
-        print("please type a number greater than 0 next time")
-        continue
+        if guess < 0:
+            print("please type a number greater than 0 next time")
+            guesses -= 1
+            continue
 
-    if guess == random_number:
-        print("you guessed right")
-        break
-    else:
-        print("you guessed wrong")
-        print("the number is", random_number)
-    print("you took", guesses, "guesses")
+        if guess == random_number:
+            print("you guessed right")
+            print("you took", guesses, "guesses")
+            break
+        else:
+            print("you guessed wrong")
 
