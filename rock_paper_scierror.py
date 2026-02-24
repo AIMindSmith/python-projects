@@ -5,8 +5,8 @@ computer_wins = 0
 options = ["rock", "paper", "scissor"]
 
 while True:
-    user_input = input("Type Rock/Paper/Scissor or Q to quit: ").lower()
-    if user_input == "q":
+    user_input = input("Type Rock/Paper/Scissor or q to QUIT: ").lower()
+    if user_input == "q" or user_input == "quit":
         quit()
 
     if user_input not in options:
