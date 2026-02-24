@@ -2,9 +2,12 @@ import random
 print("welcome to number guessing game")
 print("what is your name :")
 name = input().capitalize()
-playing = input("do you want to play number guessing game ? ").lower()
+playing = input("do you want to play number guessing game ?(yes/no) ").lower()
 if playing == "yes":
     print("lets start the game")
+else:
+    print("ok see you later")
+    quit()
     
 
 # print("guess a number between 1 to 10")
@@ -53,5 +56,6 @@ else:
             print("you took", guesses, "guesses")
             break
         else:
-            print("you guessed wrong")
+            print("you guessed wrong Don't worry try again")
+            print("the number is", random_number)
 
