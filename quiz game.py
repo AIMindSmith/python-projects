@@ -21,6 +21,7 @@ if answer == "central processing unit":
 else:
     print("incorrect")
     print("correct answer is central processing unit")
+    score -= 1
     quit()
 
 
@@ -32,6 +33,7 @@ if answer == "random access memory":
 else:
     print('incorrect')
     print("correct answer is random access memory")
+    score -= 1
     quit()
 
 
