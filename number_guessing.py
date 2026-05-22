@@ -2,7 +2,7 @@ import random
 print("welcome to number guessing game")
 print("what is your name :")
 name = input().capitalize()
-playing = input("do you want to play number guessing game ?(yes/no) ").lower()
+playing = input( name +' '+ "do you want to play number guessing game ?(yes/no) ").lower()
 if playing == "yes":
     print("lets start the game")
 else:
