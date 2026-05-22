@@ -1,8 +1,8 @@
-print("hello")
+print("Hello")
 print("welcome to quiz game")
 print("what is your name :")
 name=input().capitalize()
-print("hello",name)
+print("Hello",name)
 
 playing = input("do you want to play quiz game ? ").lower()
 if playing != "yes":
@@ -22,6 +22,8 @@ else:
     print("incorrect")
     print("correct answer is central processing unit")
     score -= 1
+    print("you got " + str(score) + " questions correct")
+    print("you got " + str((score / 4) * 100) + "%")
     quit()
 
 
@@ -34,6 +36,8 @@ else:
     print('incorrect')
     print("correct answer is random access memory")
     score -= 1
+    print("you got " + str(score) + " questions correct")
+    print("you got " + str((score / 4) * 100) + "%")
     quit()
 
 
@@ -46,6 +50,9 @@ else:
 
     print("incorrect")
     print("correct answer is graphics processing unit")
+    score -=1
+    print("you got " + str(score) + " questions correct")
+    print("you got " + str((score / 4) * 100) + "%")
     quit()
 
 
@@ -57,6 +64,9 @@ if answer == "universal serial bus":
 else:
     print("incorrect")
     print("correct answer is universal serial bus")
+    score -=1
+    print("you got " + str(score) + " questions correct")
+    print("you got " + str((score / 4) * 100) + "%")
     quit()
 
 
