@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⏰ Smart Alarm Clock</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>⏰ Smart Alarm Clock</h1>
+            <p class="subtitle">Set your wake-up time</p>
+        </div>
+
+        <!-- Current Time Display -->
+        <div class="time-display">
+            <div class="current-time" id="currentTime">
+                <span class="time">00:00:00</span>
+            </div>
+            <p class="time-label">Current Time</p>
+        </div>
+
+        <!-- Alarm Settings -->
+        <div class="alarm-setup">
+            <div class="row">
+                <div class="input-group">
+                    <label for="alarmHour">Hour</label>
+                    <input type="number" id="alarmHour" min="0" max="23" class="input-field" placeholder="00">
+                </div>
+                <span class="separator">:</span>
+                <div class="input-group">
+                    <label for="alarmMinute">Minute</label>
+                    <input type="number" id="alarmMinute" min="0" max="59" class="input-field" placeholder="00">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="setAlarmBtn" onclick="setAlarm()">
+                <span class="btn-icon">⏲️</span> Set Alarm
+            </button>
+        </div>
+
+        <!-- Alarm Status -->
+        <div class="alarm-status">
+            <div class="status-card" id="statusCard">
+                <p class="status-label">No alarm set</p>
+                <p class="alarm-time" id="alarmTime">--:--</p>
+            </div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="controls" id="controlsHidden" style="display: none;">
+            <button class="btn btn-stop" onclick="stopAlarm()">
+                <span class="btn-icon">⛔</span> Stop
+            </button>
+            <button class="btn btn-snooze" onclick="snoozeAlarm()">
+                <span class="btn-icon">😴</span> Snooze (5 min)
+            </button>
+            <button class="btn btn-reset" onclick="resetAlarm()">
+                <span class="btn-icon">🔄</span> New Alarm
+            </button>
+        </div>
+
+        <!-- Features -->
+        <div class="features">
+            <div class="feature-item">
+                <span class="feature-icon">📱</span>
+                <p>Mobile Friendly</p>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🔊</span>
+                <p>Sound Alert</p>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">⏱️</span>
+                <p>Snooze Support</p>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🎨</span>
+                <p>Modern UI</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Made with ❤️ for better mornings</p>
+        </div>
+    </div>
+
+    <!-- Alarm Sound (hidden) -->
+    <audio id="alarmSound" preload="auto">
+        <source src="sound.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        let alarmSet = false;
+        let alarmTime = null;
+        let isAlarmRinging = false;
+
+        // Update current time every second
+        function updateCurrentTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('currentTime').innerHTML = 
+                `<span class="time">${hours}:${minutes}:${seconds}</span>`;
+
+            // Check if alarm time is reached
+            if (alarmSet && !isAlarmRinging) {
+                const currentTimeStr = `${hours}:${minutes}`;
+                if (currentTimeStr === alarmTime) {
+                    triggerAlarm();
+                }
+            }
+        }
+
+        function setAlarm() {
+            const hour = document.getElementById('alarmHour').value.padStart(2, '0');
+            const minute = document.getElementById('alarmMinute').value.padStart(2, '0');
+
+            if (hour === '00' && minute === '00') {
+                alert('Please set a valid alarm time!');
+                return;
+            }
+
+            alarmTime = `${hour}:${minute}`;
+            alarmSet = true;
+            isAlarmRinging = false;
+
+            document.getElementById('statusCard').innerHTML = 
+                `<p class="status-label">✅ Alarm Set For</p><p class="alarm-time">${alarmTime}</p>`;
+            document.getElementById('statusCard').classList.add('alarm-active');
+            document.getElementById('controlsHidden').style.display = 'none';
+
+            showNotification(`Alarm set for ${alarmTime}!`);
+        }
+
+        function triggerAlarm() {
+            isAlarmRinging = true;
+            document.getElementById('statusCard').classList.remove('alarm-active');
+            document.getElementById('statusCard').classList.add('alarm-ringing');
+            document.getElementById('statusCard').innerHTML = 
+                `<p class="status-label" style="animation: pulse 0.5s infinite;">🔔 ALARM! 🔔</p><p class="alarm-time">${alarmTime}</p>`;
+            
+            document.getElementById('controlsHidden').style.display = 'flex';
+
+            // Play alarm sound
+            playAlarmSound();
+        }
+
+        function playAlarmSound() {
+            const audio = document.getElementById('alarmSound');
+            audio.play().catch(() => {
+                // If audio fails, show a visual alert
+                showNotification('Alarm triggered! (Sound unavailable)', 'warning');
+            });
+        }
+
+        function stopAlarm() {
+            isAlarmRinging = false;
+            alarmSet = false;
+            document.getElementById('alarmSound').pause();
+            document.getElementById('statusCard').classList.remove('alarm-ringing');
+            document.getElementById('statusCard').innerHTML = 
+                `<p class="status-label">No alarm set</p><p class="alarm-time">--:--</p>`;
+            document.getElementById('controlsHidden').style.display = 'none';
+            showNotification('Alarm stopped!');
+        }
+
+        function snoozeAlarm() {
+            const audio = document.getElementById('alarmSound');
+            audio.pause();
+            
+            const [hours, minutes] = alarmTime.split(':').map(Number);
+            let newMinutes = minutes + 5;
+            let newHours = hours;
+
+            if (newMinutes >= 60) {
+                newHours = (newHours + 1) % 24;
+                newMinutes -= 60;
+            }
+
+            alarmTime = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+            isAlarmRinging = false;
+
+            document.getElementById('statusCard').classList.remove('alarm-ringing');
+            document.getElementById('statusCard').classList.add('alarm-active');
+            document.getElementById('statusCard').innerHTML = 
+                `<p class="status-label">😴 Snoozed Until</p><p class="alarm-time">${alarmTime}</p>`;
+            document.getElementById('controlsHidden').style.display = 'none';
+
+            showNotification(`Snoozed for 5 minutes! Next alarm: ${alarmTime}`);
+        }
+
+        function resetAlarm() {
+            stopAlarm();
+            document.getElementById('alarmHour').value = '';
+            document.getElementById('alarmMinute').value = '';
+            showNotification('Ready for a new alarm!');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize
+        setInterval(updateCurrentTime, 1000);
+        updateCurrentTime();
+    </script>
+</body>
+</html>
